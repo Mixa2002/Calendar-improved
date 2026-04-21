@@ -191,17 +191,39 @@ function renderCalendar(data) {
 
         const dayTasks = taskMap.get(cell.dataset.dateKey) || [];
         if (dayTasks.length > 0) {
-            const dots = document.createElement('div');
-            dots.className = 'dots';
-            for (const t of dayTasks.slice(0, 4)) {
-                const dot = document.createElement('span');
-                dot.className = 'dot';
-                if (t.done) dot.classList.add('done');
-                dot.style.background = t.goalColor;
-                dot.title = `${t.goalTitle}: ${t.title}`;
-                dots.appendChild(dot);
+            if (state.viewMode === 'week') {
+                const chips = document.createElement('div');
+                chips.className = 'chips';
+                const maxShow = 4;
+                for (const t of dayTasks.slice(0, maxShow)) {
+                    const chip = document.createElement('span');
+                    chip.className = 'chip';
+                    if (t.done) chip.classList.add('done');
+                    chip.style.background = t.goalColor;
+                    chip.textContent = t.title;
+                    chip.title = `${t.goalTitle}: ${t.title}`;
+                    chips.appendChild(chip);
+                }
+                if (dayTasks.length > maxShow) {
+                    const more = document.createElement('span');
+                    more.className = 'chip-more';
+                    more.textContent = `+${dayTasks.length - maxShow}`;
+                    chips.appendChild(more);
+                }
+                cell.appendChild(chips);
+            } else {
+                const dots = document.createElement('div');
+                dots.className = 'dots';
+                for (const t of dayTasks.slice(0, 4)) {
+                    const dot = document.createElement('span');
+                    dot.className = 'dot';
+                    if (t.done) dot.classList.add('done');
+                    dot.style.background = t.goalColor;
+                    dot.title = `${t.goalTitle}: ${t.title}`;
+                    dots.appendChild(dot);
+                }
+                cell.appendChild(dots);
             }
-            cell.appendChild(dots);
         }
 
         // Drag-and-drop target
@@ -441,13 +463,19 @@ function renderGoals(data) {
         const tasks = goal.tasks || [];
         const doneCount = tasks.filter(t => t.done).length;
         const pct = tasks.length === 0 ? 0 : Math.round((doneCount / tasks.length) * 100);
+        const collapsed = !!goal.collapsed;
 
         const card = document.createElement('div');
         card.className = 'goal-card';
+        if (collapsed) card.classList.add('collapsed');
         card.style.borderLeftColor = hex;
 
         const header = document.createElement('div');
         header.className = 'goal-card-header';
+
+        const chevron = document.createElement('span');
+        chevron.className = 'chevron';
+        chevron.textContent = collapsed ? '▸' : '▾';
 
         const swatch = document.createElement('span');
         swatch.className = 'goal-swatch';
@@ -467,12 +495,26 @@ function renderGoals(data) {
         addTaskBtn.style.color = hex;
         addTaskBtn.style.borderColor = hex;
         addTaskBtn.textContent = '+ Task';
+        addTaskBtn.addEventListener('click', (e) => e.stopPropagation());
 
+        header.appendChild(chevron);
         header.appendChild(swatch);
         header.appendChild(title);
         header.appendChild(count);
         header.appendChild(addTaskBtn);
         card.appendChild(header);
+
+        header.addEventListener('click', (e) => {
+            if (e.target.closest('button')) return;
+            goal.collapsed = !goal.collapsed;
+            saveData(data);
+            render();
+        });
+
+        const body = document.createElement('div');
+        body.className = 'goal-body';
+        if (collapsed) body.hidden = true;
+        card.appendChild(body);
 
         // Progress bar
         const progress = document.createElement('div');
@@ -482,12 +524,25 @@ function renderGoals(data) {
         fill.style.width = `${pct}%`;
         fill.style.background = hex;
         progress.appendChild(fill);
-        card.appendChild(progress);
+        body.appendChild(progress);
 
         const taskForm = document.createElement('div');
         taskForm.className = 'task-form';
-        card.appendChild(taskForm);
-        addTaskBtn.addEventListener('click', () => openTaskForm(data, goal, taskForm));
+        body.appendChild(taskForm);
+        addTaskBtn.addEventListener('click', () => {
+            if (goal.collapsed) {
+                goal.collapsed = false;
+                saveData(data);
+                render();
+                // Re-query the fresh task form and open it
+                const cards = goalsListEl.querySelectorAll('.goal-card');
+                const idx = data.goals.indexOf(goal);
+                const form = cards[idx]?.querySelector('.task-form');
+                if (form) openTaskForm(data, goal, form);
+                return;
+            }
+            openTaskForm(data, goal, taskForm);
+        });
 
         if (tasks.length > 0) {
             const list = document.createElement('ul');
@@ -535,7 +590,7 @@ function renderGoals(data) {
                 li.appendChild(tMeta);
                 list.appendChild(li);
             }
-            card.appendChild(list);
+            body.appendChild(list);
         }
 
         goalsListEl.appendChild(card);
