@@ -18,7 +18,7 @@ const colorById = Object.fromEntries(COLORS.map(c => [c.id, c]));
 const state = {
     viewMode: 'week', // 'week' | 'month'
     anchor: stripTime(new Date()),
-    selectedDate: null,
+    selectedDate: toDateKey(new Date()),
 };
 
 // ============================================================
