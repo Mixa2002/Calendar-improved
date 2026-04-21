@@ -25,12 +25,69 @@ body {
     color: #555;
 }
 
+/* ---------------------- Calendar ---------------------- */
+
 .calendar {
     background: #fff;
     border-radius: 12px;
     padding: 0.75rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.calendar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.view-toggle {
+    display: inline-flex;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.view-toggle button {
+    background: #fff;
+    border: none;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #555;
+}
+
+.view-toggle button.active {
+    background: #4f46e5;
+    color: #fff;
+}
+
+.nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.nav-btn {
+    background: transparent;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    color: #555;
+}
+
+.nav-btn:hover {
+    background: #f3f4f6;
 }
 
 .weekdays,
@@ -46,7 +103,7 @@ body {
 
 .weekdays div {
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
     color: #888;
     text-transform: uppercase;
@@ -66,8 +123,17 @@ body {
     font-size: 0.95rem;
     color: #333;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.05s;
     position: relative;
+    user-select: none;
+}
+
+.days.month-view .day {
+    font-size: 0.85rem;
+}
+
+.day:hover {
+    background: #eef2ff;
 }
 
 .day .day-num {
@@ -87,12 +153,13 @@ body {
     background: #4f46e5;
 }
 
-.day:hover {
-    background: #eef2ff;
+.day .dot.done {
+    opacity: 0.35;
 }
 
 .day.other-month {
     color: #bbb;
+    background: #fbfbfb;
 }
 
 .day.today {
@@ -100,6 +167,72 @@ body {
     color: #fff;
     font-weight: 600;
 }
+
+.day.today .dot {
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.4);
+}
+
+.day.selected {
+    box-shadow: 0 0 0 2px #4f46e5 inset;
+}
+
+.day.drag-over {
+    background: #e0e7ff;
+    transform: scale(1.03);
+}
+
+/* ---------------------- Day panel ---------------------- */
+
+.day-panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1rem;
+}
+
+.day-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+}
+
+.day-panel-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.task-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.6rem;
+    margin-top: 4px;
+    background: #fafafa;
+    border-left: 3px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.88rem;
+    cursor: pointer;
+}
+
+.task-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: currentColor;
+}
+
+.task-row .task-title {
+    flex: 1;
+}
+
+.task-goal {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* ---------------------- Goals ---------------------- */
 
 .goals {
     background: #fff;
@@ -129,7 +262,7 @@ body {
     background: #fafafa;
     border-radius: 6px;
     padding: 0.6rem 0.75rem;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
 }
 
 .goal-card-header {
@@ -154,6 +287,22 @@ body {
 .goal-count {
     font-size: 0.8rem;
     color: #888;
+    font-variant-numeric: tabular-nums;
+}
+
+.progress {
+    height: 6px;
+    background: #ececec;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #4f46e5;
+    transition: width 0.25s ease;
+    border-radius: 3px;
 }
 
 .task-list {
@@ -164,26 +313,55 @@ body {
 
 .task-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 0.35rem 0.5rem;
+    gap: 0.5rem;
+    padding: 0.4rem 0.55rem;
     margin-top: 4px;
     background: #fff;
     border-left: 3px solid #ccc;
-    border-radius: 4px;
+    border-radius: 5px;
     font-size: 0.88rem;
+    cursor: grab;
 }
 
-.task-title {
+.task-item:active {
+    cursor: grabbing;
+}
+
+.task-item.dragging {
+    opacity: 0.4;
+}
+
+.task-item input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    accent-color: currentColor;
+}
+
+.task-item .task-title {
+    flex: 1;
     color: #333;
+}
+
+.task-title.done {
+    text-decoration: line-through;
+    color: #999;
 }
 
 .task-date {
     color: #888;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
+    white-space: nowrap;
 }
 
-/* Buttons */
+.task-date.unassigned {
+    color: #aaa;
+    font-style: italic;
+}
+
+/* ---------------------- Buttons ---------------------- */
+
 .btn-primary {
     background: #4f46e5;
     color: #fff;
@@ -219,7 +397,8 @@ body {
     cursor: pointer;
 }
 
-/* Forms */
+/* ---------------------- Forms ---------------------- */
+
 .goal-form,
 .task-form {
     display: flex;

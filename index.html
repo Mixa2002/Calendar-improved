@@ -8,11 +8,22 @@
 </head>
 <body>
     <header class="app-header">
-        <h1 id="calendar-title">Calendar</h1>
+        <h1 id="app-title">Calendar</h1>
     </header>
 
     <main>
         <section class="calendar">
+            <div class="calendar-controls">
+                <div class="view-toggle" id="view-toggle">
+                    <button type="button" data-view="week" class="active">Week</button>
+                    <button type="button" data-view="month">Month</button>
+                </div>
+                <div class="nav">
+                    <button type="button" id="prev-btn" class="nav-btn" aria-label="Previous">&#8249;</button>
+                    <span id="calendar-title"></span>
+                    <button type="button" id="next-btn" class="nav-btn" aria-label="Next">&#8250;</button>
+                </div>
+            </div>
             <div class="weekdays">
                 <div>Mon</div>
                 <div>Tue</div>
@@ -23,6 +34,14 @@
                 <div>Sun</div>
             </div>
             <div class="days" id="days"></div>
+        </section>
+
+        <section id="day-panel" class="day-panel" hidden>
+            <div class="day-panel-header">
+                <h3 id="day-panel-title"></h3>
+                <button type="button" id="day-panel-close" class="btn-ghost">Close</button>
+            </div>
+            <div id="day-panel-tasks"></div>
         </section>
 
         <section class="goals">
