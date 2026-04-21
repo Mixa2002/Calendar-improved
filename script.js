@@ -191,39 +191,25 @@ function renderCalendar(data) {
 
         const dayTasks = taskMap.get(cell.dataset.dateKey) || [];
         if (dayTasks.length > 0) {
-            if (state.viewMode === 'week') {
-                const chips = document.createElement('div');
-                chips.className = 'chips';
-                const maxShow = 4;
-                for (const t of dayTasks.slice(0, maxShow)) {
-                    const chip = document.createElement('span');
-                    chip.className = 'chip';
-                    if (t.done) chip.classList.add('done');
-                    chip.style.background = t.goalColor;
-                    chip.textContent = t.title;
-                    chip.title = `${t.goalTitle}: ${t.title}`;
-                    chips.appendChild(chip);
-                }
-                if (dayTasks.length > maxShow) {
-                    const more = document.createElement('span');
-                    more.className = 'chip-more';
-                    more.textContent = `+${dayTasks.length - maxShow}`;
-                    chips.appendChild(more);
-                }
-                cell.appendChild(chips);
-            } else {
-                const dots = document.createElement('div');
-                dots.className = 'dots';
-                for (const t of dayTasks.slice(0, 4)) {
-                    const dot = document.createElement('span');
-                    dot.className = 'dot';
-                    if (t.done) dot.classList.add('done');
-                    dot.style.background = t.goalColor;
-                    dot.title = `${t.goalTitle}: ${t.title}`;
-                    dots.appendChild(dot);
-                }
-                cell.appendChild(dots);
+            const chips = document.createElement('div');
+            chips.className = 'chips';
+            const maxShow = state.viewMode === 'week' ? 4 : 3;
+            for (const t of dayTasks.slice(0, maxShow)) {
+                const chip = document.createElement('span');
+                chip.className = 'chip';
+                if (t.done) chip.classList.add('done');
+                chip.style.background = t.goalColor;
+                chip.textContent = t.title;
+                chip.title = `${t.goalTitle}: ${t.title}`;
+                chips.appendChild(chip);
             }
+            if (dayTasks.length > maxShow) {
+                const more = document.createElement('span');
+                more.className = 'chip-more';
+                more.textContent = `+${dayTasks.length - maxShow}`;
+                chips.appendChild(more);
+            }
+            cell.appendChild(chips);
         }
 
         // Drag-and-drop target
@@ -374,23 +360,30 @@ function openGoalForm(data) {
     const actions = document.createElement('div');
     actions.className = 'form-actions';
 
-    const saveBtn = document.createElement('button');
-    saveBtn.type = 'button';
-    saveBtn.className = 'btn-primary';
-    saveBtn.textContent = 'Save goal';
-    saveBtn.addEventListener('click', () => {
+    function saveGoal() {
         const title = input.value.trim();
         if (!title || !selectedColor) return;
         data.goals.push({ id: uid(), title, colorId: selectedColor, tasks: [] });
         saveData(data);
         render();
-    });
+    }
+
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'button';
+    saveBtn.className = 'btn-primary';
+    saveBtn.textContent = 'Save goal';
+    saveBtn.addEventListener('click', saveGoal);
 
     const cancelBtn = document.createElement('button');
     cancelBtn.type = 'button';
     cancelBtn.className = 'btn-ghost';
     cancelBtn.textContent = 'Cancel';
     cancelBtn.addEventListener('click', () => render());
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); saveGoal(); }
+        else if (e.key === 'Escape') { e.preventDefault(); render(); }
+    });
 
     actions.appendChild(saveBtn);
     actions.appendChild(cancelBtn);
@@ -414,25 +407,32 @@ function openTaskForm(data, goal, container) {
     const actions = document.createElement('div');
     actions.className = 'form-actions';
 
-    const saveBtn = document.createElement('button');
-    saveBtn.type = 'button';
-    saveBtn.className = 'btn-primary';
-    saveBtn.style.background = hex;
-    saveBtn.textContent = 'Add task';
-    saveBtn.addEventListener('click', () => {
+    function saveTask() {
         const title = input.value.trim();
         if (!title) return;
         goal.tasks = goal.tasks || [];
         goal.tasks.push({ id: uid(), title, date: null, done: false });
         saveData(data);
         render();
-    });
+    }
+
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'button';
+    saveBtn.className = 'btn-primary';
+    saveBtn.style.background = hex;
+    saveBtn.textContent = 'Add task';
+    saveBtn.addEventListener('click', saveTask);
 
     const cancelBtn = document.createElement('button');
     cancelBtn.type = 'button';
     cancelBtn.className = 'btn-ghost';
     cancelBtn.textContent = 'Cancel';
     cancelBtn.addEventListener('click', () => render());
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); saveTask(); }
+        else if (e.key === 'Escape') { e.preventDefault(); render(); }
+    });
 
     actions.appendChild(saveBtn);
     actions.appendChild(cancelBtn);

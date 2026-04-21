@@ -129,11 +129,8 @@ body {
 }
 
 .days.month-view .day {
-    aspect-ratio: 1 / 1;
-    min-height: 0;
-    padding: 4px 2px;
-    align-items: center;
-    justify-content: center;
+    min-height: 72px;
+    padding: 4px 3px;
     font-size: 0.85rem;
 }
 
@@ -151,6 +148,15 @@ body {
 .days.month-view .day .day-num {
     font-size: inherit;
     font-weight: inherit;
+}
+
+.days.month-view .day .chip {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+}
+
+.days.month-view .day .chip-more {
+    font-size: 0.58rem;
 }
 
 .day .chips {
