@@ -12,19 +12,19 @@
     </header>
 
     <main>
-        <section class="calendar">
+        <section class="calendar" aria-label="Calendar">
             <div class="calendar-controls">
-                <div class="view-toggle" id="view-toggle">
+                <div class="view-toggle" id="view-toggle" role="group" aria-label="Calendar view">
                     <button type="button" data-view="week" class="active">Week</button>
                     <button type="button" data-view="month">Month</button>
                 </div>
                 <div class="nav">
                     <button type="button" id="prev-btn" class="nav-btn" aria-label="Previous">&#8249;</button>
-                    <span id="calendar-title"></span>
+                    <span id="calendar-title" aria-live="polite"></span>
                     <button type="button" id="next-btn" class="nav-btn" aria-label="Next">&#8250;</button>
                 </div>
             </div>
-            <div class="weekdays">
+            <div class="weekdays" aria-hidden="true">
                 <div>Mon</div>
                 <div>Tue</div>
                 <div>Wed</div>
@@ -33,18 +33,18 @@
                 <div>Sat</div>
                 <div>Sun</div>
             </div>
-            <div class="days" id="days"></div>
+            <div class="days" id="days" role="grid" aria-label="Days"></div>
         </section>
 
-        <section id="day-panel" class="day-panel" hidden>
+        <section id="day-panel" class="day-panel" aria-label="Selected day tasks" hidden>
             <div class="day-panel-header">
-                <h3 id="day-panel-title"></h3>
+                <h2 id="day-panel-title"></h2>
                 <button type="button" id="day-panel-close" class="btn-ghost">Close</button>
             </div>
             <div id="day-panel-tasks"></div>
         </section>
 
-        <section class="goals">
+        <section class="goals" aria-label="Goals">
             <div class="goals-header">
                 <h2>Goals</h2>
                 <button id="add-goal-btn" class="btn-primary">+ Add goal</button>
@@ -53,6 +53,8 @@
             <div id="goals-list"></div>
         </section>
     </main>
+
+    <div id="sr-status" role="status" aria-live="polite" class="sr-only"></div>
 
     <script type="module" src="js/main.js"></script>
 </body>
