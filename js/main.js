@@ -1,3 +1,5 @@
+import { stripTime, toDateKey, fromDateKey, mondayOf, addDays, sameDay, monthCellCount, MONTHS, MONTHS_SHORT, uid } from './dates.js';
+
 // ============================================================
 // State & constants
 // ============================================================
@@ -37,52 +39,6 @@ const dayPanelEl = document.getElementById('day-panel');
 const dayPanelTitle = document.getElementById('day-panel-title');
 const dayPanelTasks = document.getElementById('day-panel-tasks');
 const dayPanelClose = document.getElementById('day-panel-close');
-
-// ============================================================
-// Utilities
-// ============================================================
-
-function stripTime(d) {
-    const x = new Date(d);
-    x.setHours(0, 0, 0, 0);
-    return x;
-}
-
-function uid() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-}
-
-function toDateKey(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-}
-
-function fromDateKey(key) {
-    const [y, m, d] = key.split('-').map(Number);
-    return new Date(y, m - 1, d);
-}
-
-function mondayOf(date) {
-    const d = stripTime(date);
-    const dow = (d.getDay() + 6) % 7; // 0 = Mon
-    d.setDate(d.getDate() - dow);
-    return d;
-}
-
-function addDays(date, n) {
-    const d = new Date(date);
-    d.setDate(d.getDate() + n);
-    return d;
-}
-
-function sameDay(a, b) {
-    return stripTime(a).getTime() === stripTime(b).getTime();
-}
-
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 // ============================================================
 // Data layer
