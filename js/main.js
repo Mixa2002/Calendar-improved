@@ -1,22 +1,23 @@
 import { stripTime, toDateKey, fromDateKey, mondayOf, addDays, sameDay, monthCellCount, MONTHS, MONTHS_SHORT, uid } from './dates.js';
+import {
+    COLORS,
+    colorById,
+    MAX_GOALS,
+    loadData,
+    saveData,
+    loadView,
+    saveView,
+    usedColorIds,
+    findTask,
+    tasksByDate,
+} from './store.js';
 
 // ============================================================
-// State & constants
+// State
 // ============================================================
 
-const STORAGE_KEY = 'calendar-improved-data';
-const VIEW_KEY = 'calendar-improved-view';
-const MAX_GOALS = 5;
-
-const COLORS = [
-    { id: 'red',    label: 'Urgent',  hex: '#ef4444' },
-    { id: 'orange', label: 'High',    hex: '#f97316' },
-    { id: 'yellow', label: 'Medium',  hex: '#eab308' },
-    { id: 'teal',   label: 'Low',     hex: '#14b8a6' },
-    { id: 'blue',   label: 'Someday', hex: '#3b82f6' },
-];
-const colorById = Object.fromEntries(COLORS.map(c => [c.id, c]));
-
+// state.anchor invariant: always the result of stripTime() (midnight local).
+// In month view, we additionally normalize anchor to the 1st of the month.
 const state = {
     viewMode: 'week', // 'week' | 'month'
     anchor: stripTime(new Date()),
@@ -39,63 +40,6 @@ const dayPanelEl = document.getElementById('day-panel');
 const dayPanelTitle = document.getElementById('day-panel-title');
 const dayPanelTasks = document.getElementById('day-panel-tasks');
 const dayPanelClose = document.getElementById('day-panel-close');
-
-// ============================================================
-// Data layer
-// ============================================================
-
-function loadData() {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { goals: [] };
-        const parsed = JSON.parse(raw);
-        return parsed && Array.isArray(parsed.goals) ? parsed : { goals: [] };
-    } catch {
-        return { goals: [] };
-    }
-}
-
-function saveData(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function loadView() {
-    try {
-        const raw = localStorage.getItem(VIEW_KEY);
-        if (!raw) return;
-        const v = JSON.parse(raw);
-        if (v.viewMode === 'week' || v.viewMode === 'month') state.viewMode = v.viewMode;
-    } catch {}
-}
-
-function saveView() {
-    localStorage.setItem(VIEW_KEY, JSON.stringify({ viewMode: state.viewMode }));
-}
-
-function usedColorIds(data) {
-    return new Set(data.goals.map(g => g.colorId));
-}
-
-function findTask(data, taskId) {
-    for (const goal of data.goals) {
-        const task = (goal.tasks || []).find(t => t.id === taskId);
-        if (task) return { goal, task };
-    }
-    return null;
-}
-
-function tasksByDate(data) {
-    const map = new Map();
-    for (const goal of data.goals) {
-        const hex = colorById[goal.colorId]?.hex || '#4f46e5';
-        for (const task of goal.tasks || []) {
-            if (!task.date) continue;
-            if (!map.has(task.date)) map.set(task.date, []);
-            map.get(task.date).push({ ...task, goalColor: hex, goalTitle: goal.title, goalId: goal.id });
-        }
-    }
-    return map;
-}
 
 // ============================================================
 // Calendar rendering
@@ -563,7 +507,7 @@ function setupControls() {
         if (!btn) return;
         state.viewMode = btn.dataset.view;
         state.anchor = stripTime(new Date());
-        saveView();
+        saveView({ viewMode: state.viewMode });
         render();
     });
 
@@ -605,6 +549,7 @@ function render() {
     renderGoalForm(data);
 }
 
-loadView();
+const savedView = loadView();
+if (savedView.viewMode) state.viewMode = savedView.viewMode;
 setupControls();
 render();
