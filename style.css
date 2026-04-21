@@ -1,3 +1,12 @@
+:root {
+    --c-primary: #2FA084;
+    --c-primary-dark: #1F6F5F;
+    --c-accent: #6FCF97;
+    --c-bg: #EEEEEE;
+    --c-primary-soft: rgba(47, 160, 132, 0.12);
+    --c-accent-soft: rgba(111, 207, 151, 0.18);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +15,7 @@
 
 body {
     font-family: system-ui, -apple-system, sans-serif;
-    background: #f5f5f5;
+    background: var(--c-bg);
     color: #222;
     min-height: 100vh;
     padding: 1rem;
@@ -22,7 +31,7 @@ body {
 .app-header h1 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #555;
+    color: var(--c-primary-dark);
 }
 
 /* ---------------------- Calendar ---------------------- */
@@ -61,7 +70,7 @@ body {
 }
 
 .view-toggle button.active {
-    background: #4f46e5;
+    background: var(--c-primary);
     color: #fff;
 }
 
@@ -135,7 +144,7 @@ body {
 }
 
 .day:hover {
-    background: #eef2ff;
+    background: var(--c-accent-soft);
 }
 
 .day .day-num {
@@ -169,7 +178,7 @@ body {
 .day .chip {
     font-size: 0.65rem;
     color: #fff;
-    background: #4f46e5;
+    background: var(--c-primary);
     padding: 2px 5px;
     border-radius: 3px;
     white-space: nowrap;
@@ -201,7 +210,7 @@ body {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #4f46e5;
+    background: var(--c-primary);
 }
 
 .day .dot.done {
@@ -214,7 +223,7 @@ body {
 }
 
 .day.today {
-    background: #4f46e5;
+    background: var(--c-primary-dark);
     color: #fff;
     font-weight: 600;
 }
@@ -224,11 +233,11 @@ body {
 }
 
 .day.selected {
-    box-shadow: 0 0 0 2px #4f46e5 inset;
+    box-shadow: 0 0 0 2px var(--c-primary) inset;
 }
 
 .day.drag-over {
-    background: #e0e7ff;
+    background: var(--c-accent-soft);
     transform: scale(1.03);
 }
 
@@ -369,7 +378,7 @@ body {
 
 .progress-fill {
     height: 100%;
-    background: #4f46e5;
+    background: var(--c-primary);
     transition: width 0.25s ease;
     border-radius: 3px;
 }
@@ -432,7 +441,7 @@ body {
 /* ---------------------- Buttons ---------------------- */
 
 .btn-primary {
-    background: #4f46e5;
+    background: var(--c-primary);
     color: #fff;
     border: none;
     padding: 0.4rem 0.75rem;
@@ -501,7 +510,7 @@ body {
 }
 
 .form-input:focus {
-    border-color: #4f46e5;
+    border-color: var(--c-primary);
 }
 
 .form-actions {
