@@ -1,0 +1,291 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    min-height: 100vh;
+    padding: 1rem;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.app-header {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.app-header h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.calendar {
+    background: #fff;
+    border-radius: 12px;
+    padding: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+}
+
+.weekdays,
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.weekdays {
+    margin-bottom: 6px;
+}
+
+.weekdays div {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 0;
+}
+
+.day {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 8px;
+    background: #fafafa;
+    font-size: 0.95rem;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+}
+
+.day .day-num {
+    line-height: 1;
+}
+
+.day .dots {
+    display: flex;
+    gap: 3px;
+    height: 6px;
+}
+
+.day .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4f46e5;
+}
+
+.day:hover {
+    background: #eef2ff;
+}
+
+.day.other-month {
+    color: #bbb;
+}
+
+.day.today {
+    background: #4f46e5;
+    color: #fff;
+    font-weight: 600;
+}
+
+.goals {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.goals-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.goals h2 {
+    font-size: 1.1rem;
+}
+
+.goals-placeholder {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.goal-card {
+    border-left: 4px solid #ccc;
+    background: #fafafa;
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.6rem;
+}
+
+.goal-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.goal-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.goal-title {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.goal-count {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.task-list {
+    list-style: none;
+    margin-top: 0.5rem;
+    padding: 0;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0.5rem;
+    margin-top: 4px;
+    background: #fff;
+    border-left: 3px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.88rem;
+}
+
+.task-title {
+    color: #333;
+}
+
+.task-date {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.btn-small {
+    background: transparent;
+    border: 1px solid #ccc;
+    color: #555;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+/* Forms */
+.goal-form,
+.task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.goal-form:not([hidden]) {
+    background: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    border: 1px solid #e5e7eb;
+}
+
+.task-form:not(:empty) {
+    margin-top: 0.6rem;
+    padding: 0.6rem;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+.form-input {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    font-family: inherit;
+}
+
+.form-input:focus {
+    border-color: #4f46e5;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.color-palette {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.1s, border-color 0.15s;
+}
+
+.swatch:hover:not(:disabled) {
+    transform: scale(1.08);
+}
+
+.swatch.selected {
+    border-color: #111;
+}
+
+.swatch.used,
+.swatch:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}

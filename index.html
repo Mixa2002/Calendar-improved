@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <h1 id="calendar-title">Calendar</h1>
+    </header>
+
+    <main>
+        <section class="calendar">
+            <div class="weekdays">
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+                <div>Sun</div>
+            </div>
+            <div class="days" id="days"></div>
+        </section>
+
+        <section class="goals">
+            <div class="goals-header">
+                <h2>Goals</h2>
+                <button id="add-goal-btn" class="btn-primary">+ Add goal</button>
+            </div>
+            <div id="goal-form" class="goal-form" hidden></div>
+            <div id="goals-list"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
