@@ -70,32 +70,34 @@
             <div class="days" id="days" role="grid" aria-label="Days"></div>
         </section>
 
-        <section id="day-panel" class="day-panel" aria-label="Selected day tasks" hidden>
-            <div class="day-panel-header">
-                <h2 id="day-panel-title"></h2>
-                <button type="button" id="day-panel-close" class="btn-ghost" aria-label="Close day panel">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M18 6 6 18M6 6l12 12"/>
-                    </svg>
-                    <span>Close</span>
-                </button>
-            </div>
-            <div id="day-panel-tasks"></div>
-        </section>
+        <div class="bottom-grid">
+            <section id="day-panel" class="day-panel" aria-label="Selected day tasks" hidden>
+                <div class="day-panel-header">
+                    <h2 id="day-panel-title"></h2>
+                    <button type="button" id="day-panel-close" class="btn-ghost" aria-label="Close day panel">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M18 6 6 18M6 6l12 12"/>
+                        </svg>
+                        <span>Close</span>
+                    </button>
+                </div>
+                <div id="day-panel-tasks"></div>
+            </section>
 
-        <section class="goals" aria-label="Goals">
-            <div class="goals-header">
-                <h2>Goals</h2>
-                <button id="add-goal-btn" class="btn-primary">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M12 5v14M5 12h14"/>
-                    </svg>
-                    <span>Add goal</span>
-                </button>
-            </div>
-            <div id="goal-form" class="goal-form" hidden></div>
-            <div id="goals-list"></div>
-        </section>
+            <section class="goals" aria-label="Goals">
+                <div class="goals-header">
+                    <h2>Goals</h2>
+                    <button id="add-goal-btn" class="btn-primary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                        <span>Add goal</span>
+                    </button>
+                </div>
+                <div id="goal-form" class="goal-form" hidden></div>
+                <div id="goals-list"></div>
+            </section>
+        </div>
     </main>
 
     <div id="sr-status" role="status" aria-live="polite" class="sr-only"></div>

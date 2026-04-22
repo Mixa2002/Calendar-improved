@@ -215,8 +215,23 @@ body {
     line-height: var(--lh-body);
     min-height: 100vh;
     padding: var(--sp-4);
-    max-width: 720px;
+    max-width: min(1400px, 100% - 32px);
     margin: 0 auto;
+}
+
+/* ---------------------- Bottom grid (day-panel + goals) ---------------------- */
+
+.bottom-grid {
+    display: grid;
+    grid-template-columns: minmax(360px, 1fr) minmax(360px, 1fr);
+    gap: var(--sp-4);
+    align-items: start;
+}
+
+/* When the day panel is hidden, let the goals section span the full width
+   so the layout doesn't look lopsided. */
+.bottom-grid:has(> #day-panel[hidden]) {
+    grid-template-columns: 1fr;
 }
 
 /* ---------------------- Header ---------------------- */
@@ -283,7 +298,7 @@ body {
     background: var(--c-surface-1);
     border: 1px solid var(--c-border-subtle);
     border-radius: var(--radius-lg);
-    padding: var(--sp-4);
+    padding: var(--sp-5);
     box-shadow: var(--shadow-md);
     margin-bottom: var(--sp-4);
 }
@@ -364,8 +379,8 @@ body {
 .weekdays,
 .days {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
 }
 
 .weekdays {
@@ -387,7 +402,7 @@ body {
 .day {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     border-radius: var(--radius-md);
     background: var(--c-surface-2);
     border: 1px solid transparent;
@@ -399,8 +414,10 @@ body {
         transform var(--dur-fast) var(--ease-out);
     position: relative;
     user-select: none;
-    padding: var(--sp-2) var(--sp-1);
-    min-height: 96px;
+    padding: var(--sp-2) var(--sp-2);
+    min-height: 120px;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .day:hover {
@@ -460,8 +477,8 @@ body {
 
 /* Month-view density */
 .days.month-view .day {
-    min-height: 76px;
-    padding: 4px 3px;
+    min-height: 96px;
+    padding: 6px 6px;
     font-size: var(--fs-sm);
 }
 
@@ -473,6 +490,7 @@ body {
     gap: 3px;
     overflow: hidden;
     padding: 0 2px;
+    min-width: 0;
 }
 
 .day .chip {
@@ -486,6 +504,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
+    min-width: 0;
     box-shadow: inset 2px 0 0 rgba(0,0,0,0.15);
 }
 
@@ -538,8 +558,12 @@ body {
     border-radius: var(--radius-lg);
     padding: var(--sp-4);
     box-shadow: var(--shadow-sm);
-    margin-bottom: var(--sp-4);
     animation: panel-in var(--dur-base) var(--ease-out);
+    min-width: 0;
+}
+
+.goals {
+    min-width: 0;
 }
 
 @keyframes panel-in {
