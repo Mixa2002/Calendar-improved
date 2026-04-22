@@ -4,8 +4,30 @@
 
 import { fromDateKey, MONTHS_SHORT } from './dates.js';
 import { COLORS, colorById, MAX_GOALS, usedColorIds } from './store.js';
+import { icon, buildEmptyBlock } from './calendar.js';
 
 const FALLBACK_HEX = colorById.blue.hex;
+
+// Build the shared priority legend (dot + label for each color).
+// Used inside the goal form (always) and the no-goals empty state.
+function buildPriorityLegend() {
+    const wrap = document.createElement('div');
+    wrap.className = 'priority-legend';
+    wrap.setAttribute('role', 'list');
+    wrap.setAttribute('aria-label', 'Color to priority reference');
+    for (const c of COLORS) {
+        const item = document.createElement('span');
+        item.className = 'legend-item';
+        item.setAttribute('role', 'listitem');
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        dot.style.background = c.hex;
+        item.appendChild(dot);
+        item.appendChild(document.createTextNode(c.label));
+        wrap.appendChild(item);
+    }
+    return wrap;
+}
 
 function formatTaskDate(iso) {
     const d = fromDateKey(iso);
@@ -100,6 +122,7 @@ export function openGoalForm(root, data, handlers) {
 
     goalFormEl.appendChild(input);
     goalFormEl.appendChild(palette);
+    goalFormEl.appendChild(buildPriorityLegend());
     goalFormEl.appendChild(actions);
     input.focus();
 }
@@ -155,10 +178,13 @@ export function renderGoals(root, data, state, handlers) {
     goalsListEl.innerHTML = '';
 
     if (data.goals.length === 0) {
-        const p = document.createElement('p');
-        p.className = 'goals-placeholder';
-        p.textContent = 'No goals yet.';
-        goalsListEl.appendChild(p);
+        const empty = buildEmptyBlock({
+            iconName: 'target',
+            title: 'Plan your first goal',
+            hint: 'Goals are the 5 priority buckets your tasks live in. Each one gets a color you’ll see on the calendar.',
+        });
+        goalsListEl.appendChild(empty);
+        goalsListEl.appendChild(buildPriorityLegend());
         return;
     }
 
@@ -188,7 +214,8 @@ export function renderGoals(root, data, state, handlers) {
         const chevron = document.createElement('span');
         chevron.className = 'chevron';
         chevron.setAttribute('aria-hidden', 'true');
-        chevron.textContent = collapsed ? '▸' : '▾';
+        // CSS rotates it -90deg when .goal-card.collapsed
+        chevron.appendChild(icon('chevron-down', 16));
 
         const swatch = document.createElement('span');
         swatch.className = 'goal-swatch';
@@ -199,19 +226,15 @@ export function renderGoals(root, data, state, handlers) {
         title.className = 'goal-title';
         title.textContent = goal.title;
 
-        const priority = document.createElement('span');
-        priority.className = 'goal-priority';
-        priority.textContent = priorityLabel;
-        priority.style.color = hex;
-
         const count = document.createElement('span');
         count.className = 'goal-count';
         count.textContent = `${doneCount}/${tasks.length}`;
 
+        // Row 1 of the goal header: chevron / swatch / title / count.
+        // Priority pill lives in row 2 (.goal-card-header-actions below).
         header.appendChild(chevron);
         header.appendChild(swatch);
         header.appendChild(title);
-        header.appendChild(priority);
         header.appendChild(count);
         card.appendChild(header);
 
@@ -224,8 +247,18 @@ export function renderGoals(root, data, state, handlers) {
         addTaskBtn.className = 'btn-small';
         addTaskBtn.style.color = hex;
         addTaskBtn.style.borderColor = hex;
-        addTaskBtn.textContent = '+ Task';
+        addTaskBtn.appendChild(icon('plus', 12));
+        addTaskBtn.appendChild(document.createTextNode('Task'));
         addTaskBtn.setAttribute('aria-label', `Add task to ${goal.title}`);
+
+        // Row 2 of the goal header: priority pill (left) + add-task (right).
+        // The priority pill is rendered as a sibling inside .goal-card-header-actions
+        // so it sits aligned with the title column.
+        const priorityPill = document.createElement('span');
+        priorityPill.className = 'goal-priority';
+        priorityPill.textContent = priorityLabel;
+        priorityPill.style.color = hex;
+        headerActions.appendChild(priorityPill);
         headerActions.appendChild(addTaskBtn);
         card.appendChild(headerActions);
 
@@ -259,6 +292,20 @@ export function renderGoals(root, data, state, handlers) {
             e.stopPropagation();
             handlers.onRequestAddTask(goal.id, taskForm);
         });
+
+        if (tasks.length === 0) {
+            body.appendChild(buildEmptyBlock({
+                iconName: 'plus',
+                title: 'No tasks in this goal.',
+                hint: 'Use + Task to add one.',
+            }));
+        } else if (doneCount === tasks.length) {
+            body.appendChild(buildEmptyBlock({
+                iconName: 'check-circle',
+                title: 'All clear.',
+                hint: 'Every task in this goal is done. Add another or take a break.',
+            }));
+        }
 
         if (tasks.length > 0) {
             const list = document.createElement('ul');
@@ -306,21 +353,24 @@ export function renderGoals(root, data, state, handlers) {
                 const scheduleBtn = document.createElement('button');
                 scheduleBtn.type = 'button';
                 scheduleBtn.className = 'btn-small btn-schedule';
+                scheduleBtn.appendChild(icon('calendar-plus', 12));
+                const scheduleLabel = document.createElement('span');
                 if (state.selectedDate) {
-                    scheduleBtn.textContent = 'Schedule';
+                    scheduleLabel.textContent = 'Schedule';
                     scheduleBtn.setAttribute('aria-label', `Schedule “${t.title}” on selected day`);
                     scheduleBtn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         handlers.onScheduleTask(t.id, state.selectedDate, t.title);
                     });
                 } else {
-                    scheduleBtn.textContent = 'Pick a day first';
+                    scheduleLabel.textContent = 'Pick a day first';
                     scheduleBtn.disabled = true;
                     scheduleBtn.setAttribute(
                         'aria-label',
                         `Pick a day in the calendar first, then use this button to schedule “${t.title}”`,
                     );
                 }
+                scheduleBtn.appendChild(scheduleLabel);
 
                 li.appendChild(checkbox);
                 li.appendChild(tTitle);

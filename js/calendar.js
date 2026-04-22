@@ -17,6 +17,64 @@ import {
 // Colors that need dark text on top for contrast (yellow, teal, orange chips).
 const LIGHT_CHIP_COLOR_IDS = new Set(['yellow', 'teal', 'orange']);
 
+// ------------------------------------------------------------------
+// Minimal Lucide-style inline SVG helper. No build step, no CDN.
+// Exported so goals.js can reuse the same glyph set.
+// ------------------------------------------------------------------
+export const ICON_PATHS = {
+    'chevron-down':  '<polyline points="6 9 12 15 18 9"/>',
+    'chevron-left':  '<polyline points="15 18 9 12 15 6"/>',
+    'chevron-right': '<polyline points="9 18 15 12 9 6"/>',
+    'x':             '<path d="M18 6 6 18M6 6l12 12"/>',
+    'plus':          '<path d="M12 5v14M5 12h14"/>',
+    'calendar-plus': '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="12" y1="14" x2="12" y2="18"/><line x1="10" y1="16" x2="14" y2="16"/>',
+    'grip-vertical': '<circle cx="9" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="19" r="1"/>',
+    'check':         '<polyline points="20 6 9 17 4 12"/>',
+    'check-circle':  '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+    'calendar':      '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
+    'target':        '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+};
+
+export function icon(name, size = 16) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', String(size));
+    svg.setAttribute('height', String(size));
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = ICON_PATHS[name] || '';
+    return svg;
+}
+
+// Build a shared .empty block (icon + title + hint). Used for all 4 empty-state
+// scenarios across the app.
+export function buildEmptyBlock({ iconName, title, hint, iconSize = 18 }) {
+    const wrap = document.createElement('div');
+    wrap.className = 'empty';
+
+    const iconWrap = document.createElement('span');
+    iconWrap.className = 'empty-icon';
+    iconWrap.appendChild(icon(iconName, iconSize));
+    wrap.appendChild(iconWrap);
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'empty-title';
+    titleEl.textContent = title;
+    wrap.appendChild(titleEl);
+
+    if (hint) {
+        const hintEl = document.createElement('div');
+        hintEl.className = 'empty-hint';
+        hintEl.textContent = hint;
+        wrap.appendChild(hintEl);
+    }
+    return wrap;
+}
+
 export function renderCalendar(root, data, state, handlers, taskMap) {
     const { daysEl, titleEl, viewToggleEl } = root;
     daysEl.innerHTML = '';
@@ -152,10 +210,11 @@ export function renderDayPanel(root, data, state, handlers, taskMap) {
     const tasks = taskMap.get(state.selectedDate) || [];
 
     if (tasks.length === 0) {
-        const empty = document.createElement('p');
-        empty.className = 'goals-placeholder';
-        empty.textContent = 'No tasks. Drag or use “Schedule” on a task in Goals below.';
-        dayPanelTasks.appendChild(empty);
+        dayPanelTasks.appendChild(buildEmptyBlock({
+            iconName: 'calendar',
+            title: 'Nothing scheduled.',
+            hint: 'Drag a task here from Goals below, or open a task and press Schedule.',
+        }));
         return;
     }
 

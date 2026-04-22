@@ -5,10 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        // Apply stored theme before paint to avoid flash of wrong theme.
+        (function () {
+            try {
+                var t = localStorage.getItem('calendar-improved-theme');
+                if (t === 'dark' || t === 'light') {
+                    document.documentElement.setAttribute('data-theme', t);
+                }
+            } catch (e) { /* ignore */ }
+        })();
+    </script>
 </head>
 <body>
     <header class="app-header">
         <h1 id="app-title">Calendar</h1>
+        <button
+            type="button"
+            id="theme-toggle"
+            class="icon-btn"
+            aria-label="Toggle dark mode"
+            aria-pressed="false"
+            title="Toggle dark mode">
+            <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+            <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </button>
     </header>
 
     <main>
@@ -19,9 +45,17 @@
                     <button type="button" data-view="month">Month</button>
                 </div>
                 <div class="nav">
-                    <button type="button" id="prev-btn" class="nav-btn" aria-label="Previous">&#8249;</button>
+                    <button type="button" id="prev-btn" class="nav-btn" aria-label="Previous">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="15 18 9 12 15 6"/>
+                        </svg>
+                    </button>
                     <span id="calendar-title" aria-live="polite"></span>
-                    <button type="button" id="next-btn" class="nav-btn" aria-label="Next">&#8250;</button>
+                    <button type="button" id="next-btn" class="nav-btn" aria-label="Next">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
             <div class="weekdays" aria-hidden="true">
@@ -39,7 +73,12 @@
         <section id="day-panel" class="day-panel" aria-label="Selected day tasks" hidden>
             <div class="day-panel-header">
                 <h2 id="day-panel-title"></h2>
-                <button type="button" id="day-panel-close" class="btn-ghost">Close</button>
+                <button type="button" id="day-panel-close" class="btn-ghost" aria-label="Close day panel">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M18 6 6 18M6 6l12 12"/>
+                    </svg>
+                    <span>Close</span>
+                </button>
             </div>
             <div id="day-panel-tasks"></div>
         </section>
@@ -47,7 +86,12 @@
         <section class="goals" aria-label="Goals">
             <div class="goals-header">
                 <h2>Goals</h2>
-                <button id="add-goal-btn" class="btn-primary">+ Add goal</button>
+                <button id="add-goal-btn" class="btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    <span>Add goal</span>
+                </button>
             </div>
             <div id="goal-form" class="goal-form" hidden></div>
             <div id="goals-list"></div>

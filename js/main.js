@@ -178,12 +178,40 @@ function boot() {
         });
     }
 
+    function setupThemeToggle() {
+        const THEME_KEY = 'calendar-improved-theme';
+        // Pre-paint IIFE in index.html already applied stored theme.
+        const btn = document.getElementById('theme-toggle');
+        if (!btn) return;
+
+        function currentIsDark() {
+            const attr = document.documentElement.getAttribute('data-theme');
+            if (attr === 'dark') return true;
+            if (attr === 'light') return false;
+            return window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }
+        function sync() {
+            btn.setAttribute('aria-pressed', currentIsDark() ? 'true' : 'false');
+        }
+        sync();
+        btn.addEventListener('click', () => {
+            const next = currentIsDark() ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* ignore */ }
+            sync();
+        });
+        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        if (mql.addEventListener) mql.addEventListener('change', sync);
+        else if (mql.addListener) mql.addListener(sync);
+    }
+
     // Initial view pref
     const savedView = loadView();
     if (savedView.viewMode) state.viewMode = savedView.viewMode;
     // If a selectedDate exists, remember which cell to focus on panel close.
     state.lastDayCellKey = state.selectedDate;
     setupControls();
+    setupThemeToggle();
     renderAll();
 }
 
